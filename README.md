@@ -55,13 +55,13 @@ steps:
 `gradle shadowJar`
 Then upload and run:
 ```
-bashcurl -X POST http://localhost:8081/jars/upload \
+curl -X POST http://localhost:8081/jars/upload \
   -H "Expect:" \
   -F "jarfile=@build/libs/flink-processor-0.1.0.jar"
 ```
 Use the new jar ID(eg: 23xx74ca-5670-4343-ax6f-7e62xxxbb108_flink-processor-0.1.0.jar) to run it:
 ```
-bashcurl -X POST "http://localhost:8081/jars/<jar-id>/run" \
+curl -X POST "http://localhost:8081/jars/<jar-id>/run" \
   -H "Content-Type: application/json" \
   -d '{"entryClass": "com.incidentanalyzer.IncidentCorrelatorJob"}'
 ```
