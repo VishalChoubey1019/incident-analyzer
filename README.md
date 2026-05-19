@@ -1,7 +1,7 @@
 # Incident-Analyzer
 
 
-Imagine you run a website. Something breaks at 2am. Your phone buzzes. You open your laptop and see 3000 error logs. Where do you even start? What broke? Why? What do you fix first?That's the problem. This project solves it.
+Imagine you are oncall of your company. Something breaks at 2am. You start receiving calls(utter frustration). You open your laptop and see thousands of error logs. Where do you even start? What broke? Why? What do you fix first? That's the problem. This project solves it.
 
 **How do errors even reach us?** </br>
 First question you should ask: how does the system know something broke?
