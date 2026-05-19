@@ -47,4 +47,8 @@ This is all claude, I didn't want to code the dashboard as it is just HTML and J
 **To summarize the flow:** </br>
 Error happens -> service sends it to ingest -> ingest drops it in Kafka -> correlator watches Kafka, groups errors by service -> when enough errors pile up it creates an incident -> AI engine picks up the incident, calls Llama 3, gets back a plain-English analysis -> saves to MongoDB -> gRPC server reads from MongoDB -> HTTP bridge translates to JSON -> dashboard shows it to you.
 
+With correlator
 <img width="1727" height="903" alt="Screenshot 2026-05-19 at 12 29 02 AM" src="https://github.com/user-attachments/assets/5203d77d-b73f-4756-a4f2-7a47e6b71cd2" />
+
+With flink job you can see a better dashboard
+<img width="1727" height="935" alt="Screenshot 2026-05-19 at 1 32 25 PM" src="https://github.com/user-attachments/assets/7038c239-6677-4afd-ac41-8ebc019b0139" />
