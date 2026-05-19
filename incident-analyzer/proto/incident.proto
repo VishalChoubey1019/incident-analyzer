@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package incident.v1;
+
+option java_package = "com.incidentanalyzer.proto";
+option java_outer_classname = "IncidentProto";
+
+// ── Enums ──────────────────────────────────────────────────────────────────
+
+enum Severity {
+  SEVERITY_UNKNOWN  = 0;
+  SEVERITY_LOW      = 1;
+  SEVERITY_MEDIUM   = 2;
+  SEVERITY_HIGH     = 3;
+  SEVERITY_CRITICAL = 4;
+}
+
+enum IncidentStatus {
+  STATUS_UNKNOWN     = 0;
+  STATUS_OPEN        = 1;
+  STATUS_INVESTIGATING = 2;
+  STATUS_RESOLVED    = 3;
+}
+
+// ── Core messages ──────────────────────────────────────────────────────────
+
+message Incident {
+  string id          = 1;
+  string title       = 2;
+  string description = 3;
+  Severity severity  = 4;
+  IncidentStatus status = 5;
+  string service     = 6;       // affected service name
+  int64  started_at  = 7;       // unix ms
+  int64  updated_at  = 8;
+  repeated string related_event_ids = 9;
+  RootCauseAnalysis rca = 10;
+}
+
+message RootCauseAnalysis {
+  string summary          = 1;  // LLM-generated summary
+  string likely_cause     = 2;
+  repeated string recommendations = 3;
+  float  confidence_score = 4;  // 0.0–1.0
+  int64  generated_at     = 5;
+}
+
+message LogEvent {
+  string id        = 1;
+  string service   = 2;
+  string level     = 3;  // ERROR, WARN, INFO
+  string message   = 4;
+  string host      = 5;
+  int64  timestamp = 6;
+  map<string, string> labels = 7;
+}
+
+message Alert {
+  string id        = 1;
+  string name      = 2;
+  string source    = 3;  // prometheus, pagerduty, custom
+  Severity severity = 4;
+  string service   = 5;
+  string message   = 6;
+  int64  fired_at  = 7;
+  map<string, string> annotations = 8;
+}
+
+// ── Request / Response ─────────────────────────────────────────────────────
+
+message ListIncidentsRequest {
+  int32  page      = 1;
+  int32  page_size = 2;
+  IncidentStatus status_filter = 3;  // 0 = all
+  Severity min_severity = 4;
+}
+
+message ListIncidentsResponse {
+  repeated Incident incidents = 1;
+  int32 total = 2;
+}
+
+message GetIncidentRequest {
+  string id = 1;
+}
+
+message GetIncidentResponse {
+  Incident incident = 1;
+}
+
+message IngestEventRequest {
+  oneof event {
+    LogEvent log   = 1;
+    Alert    alert = 2;
+  }
+}
+
+message IngestEventResponse {
+  bool   accepted   = 1;
+  string event_id   = 2;
+  string message    = 3;
+}
+
+message StreamIncidentsRequest {
+  Severity min_severity = 1;  // stream only above this level
+}
+
+// ── Services ───────────────────────────────────────────────────────────────
+
+service IncidentService {
+  // list all incidents, newest first
+  rpc ListIncidents(ListIncidentsRequest) returns (ListIncidentsResponse);
+
+  // get a single incident with full RCA
+  rpc GetIncident(GetIncidentRequest) returns (GetIncidentResponse);
+
+  // server-streaming: push new/updated incidents to connected clients
+  rpc StreamIncidents(StreamIncidentsRequest) returns (stream Incident);
+}
+
+service AlertService {
+  // ingest a log event or alert from external sources
+  rpc IngestEvent(IngestEventRequest) returns (IngestEventResponse);
+}
+
+service AnalysisService {
+  // manually trigger RCA re-generation for an incident
+  rpc TriggerAnalysis(GetIncidentRequest) returns (RootCauseAnalysis);
+}
