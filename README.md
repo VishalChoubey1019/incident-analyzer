@@ -51,4 +51,18 @@ With correlator
 <img width="1727" height="903" alt="Screenshot 2026-05-19 at 12 29 02 AM" src="https://github.com/user-attachments/assets/5203d77d-b73f-4756-a4f2-7a47e6b71cd2" />
 
 With flink job you can see a better dashboard
+steps:
+`gradle shadowJar`
+Then upload and run:
+```
+bashcurl -X POST http://localhost:8081/jars/upload \
+  -H "Expect:" \
+  -F "jarfile=@build/libs/flink-processor-0.1.0.jar"
+```
+Use the new jar ID(eg: 23xx74ca-5670-4343-ax6f-7e62xxxbb108_flink-processor-0.1.0.jar) to run it:
+```
+bashcurl -X POST "http://localhost:8081/jars/<jar-id>/run" \
+  -H "Content-Type: application/json" \
+  -d '{"entryClass": "com.incidentanalyzer.IncidentCorrelatorJob"}'
+```
 <img width="1727" height="935" alt="Screenshot 2026-05-19 at 1 32 25 PM" src="https://github.com/user-attachments/assets/7038c239-6677-4afd-ac41-8ebc019b0139" />
