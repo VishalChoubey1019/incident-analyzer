@@ -21,7 +21,7 @@ The logic is simple:
 - Every error goes into that service's bucket
 - Every 15 seconds, check each bucket
 - If a bucket has 3+ errors, create an incident and empty the bucket
-We are using flink for processing these.
+We are using flink for processing these although I ran a python script locally to avoid the build-and-redeploy cycle during development, and as much as I have tested it's work, I still created the script so that development is easy, with the flink I have to restart everything over and over again which is lethargic.
 
 **We have an incident. Now we need the AI part.** </br>
 We have an incident object that says "order-service had 10 errors, here are the error messages." But that's still raw data. An engineer waking up at 2am doesn't want raw data, they want someone to tell them what's wrong.
