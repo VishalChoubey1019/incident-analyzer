@@ -66,3 +66,6 @@ curl -X POST "http://localhost:8081/jars/<jar-id>/run" \
   -d '{"entryClass": "com.incidentanalyzer.IncidentCorrelatorJob"}'
 ```
 <img width="1727" height="935" alt="Screenshot 2026-05-19 at 1 32 25 PM" src="https://github.com/user-attachments/assets/7038c239-6677-4afd-ac41-8ebc019b0139" />
+
+Design layout
+<img width="785" height="671" alt="Screenshot 2026-10-12 at 2 51 37 PM" src="https://github.com/user-attachments/assets/3b5977c0-02c0-4cf9-a859-fc538cefd2aa" />
